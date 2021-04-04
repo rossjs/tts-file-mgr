@@ -14,8 +14,9 @@ function parseNames(dirPaths, basePath = '') {
       // skip TTS config file
       if (id === 'WorkshopFileInfos') return;
     }
-    // if ID has been set
+    // if ID is present, add it to the set
     if (id) return mods.add(id);
+    // if no ID, it's a folder
     folders.add(filename);
   });
   return { folders: Array.from(folders), mods };
@@ -25,7 +26,8 @@ async function getModDetails(id, basePath) {
   const modPath = path.resolve(modsDirectory, basePath, `${id}.json`);
   const data = await fs.readFile(modPath);
   const { SaveName: name } = JSON.parse(data);
-  return { id, name, pngUrl: path.resolve(modsDirectory, basePath, `${id}.json`) };
+  // TODO: update this to work whever it needs to for electron
+  return { id, name, imgUrl: `http://localhost:8080/mods/${id}.png` };
 }
 
 async function getAllModDetails(modSet, basePath) {
@@ -35,6 +37,7 @@ async function getAllModDetails(modSet, basePath) {
   for (let i = 0; i < mods.length; i += 1) {
     const mod = mods[i];
     queue.push(getModDetails(mod, basePath));
+    // ? don't think this is actually needed since it'll be run locally
     // only request max of 20 files at a time
     // if (queue.length > 20 || i === mods.length - 1) {
     //   const details = await Promise.all(queue);
@@ -49,7 +52,6 @@ async function getAllModDetails(modSet, basePath) {
 
 module.exports = async function parseDirFiles(dirPaths, basePath = '') {
   const parsed = parseNames(dirPaths);
-  console.log('parsed', parsed);
   const mods = await getAllModDetails(parsed.mods, basePath);
   return { ...parsed, mods };
 };
