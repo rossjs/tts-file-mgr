@@ -26,8 +26,9 @@ async function getModDetails(id, basePath) {
   const modPath = path.resolve(modsDirectory, basePath, `${id}.json`);
   const data = await fs.readFile(modPath);
   const { SaveName: name } = JSON.parse(data);
+  const imgPath = path.join(basePath, `${id}.png`);
   // TODO: update this to work whever it needs to for electron
-  return { id, name, imgUrl: `http://localhost:8080/mods/${id}.png` };
+  return { id, name, imgUrl: `http://localhost:8080/mods/${imgPath}` };
 }
 
 async function getAllModDetails(modSet, basePath) {

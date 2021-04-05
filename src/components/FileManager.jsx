@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import { useHistory } from 'react-router-dom';
 
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -25,8 +26,12 @@ const useStyles = makeStyles((theme) => ({
 
 const FileManager = ({ folders, workshopItems, getTree, moveIntoFolder }) => {
   const classes = useStyles();
+
+  const history = useHistory();
+
+  useEffect(() => history.listen(getTree), []);
   // get tree on load
-  useEffect(() => { getTree(); }, []);
+  useEffect(() => { getTree(); }, [getTree]);
 
   const [selected, setSelected] = useState(new Set());
 

@@ -5,8 +5,11 @@ const { modsDirectory } = require('../config/index');
 
 const File = {};
 
-File.getAllFiles = async () => {
-  const files = await fs.readdir(modsDirectory);
+File.getAllFiles = async (basePath = '') => {
+  console.log('modsDirectory', modsDirectory);
+  const dir = path.resolve(modsDirectory, basePath);
+  console.log('dir', dir);
+  const files = await fs.readdir(dir);
   return files;
 };
 
