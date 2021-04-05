@@ -4,6 +4,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 import getAllFiles from '../utils/files/getAllFiles';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,26 +45,41 @@ const FileManager = () => {
 
   const { folders, mods } = folderItems;
 
+  const handleOnDragEnd = (result) => {
+    console.log('RESULT', result);
+  };
+
   return (
     <div className={classes.root}>
-      <Grid container>
-        {folders.map((folder) => (
-          <Grid item key={folder} className={classes.item} xs={6} sm={2} md={2}>
-            <FolderIcon className={classes.icon} />
-            <Typography>
-              {folder}
-            </Typography>
-          </Grid>
-        ))}
-        {mods.map(({ id, name, imgUrl }) => (
-          <Grid item key={id} className={classes.item} xs={6} sm={2} md={2}>
-            <img src={imgUrl} alt={name} className={classes.icon} />
-            <Typography>
-              {name}
-            </Typography>
-          </Grid>
-        ))}
-      </Grid>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="mod">
+          {(provided) => (
+            <Grid container {...provided.droppableProps} ref={provided.innerRef}>
+              {folders.map((folder) => (
+                <Grid item key={folder} className={classes.item} xs={6} sm={2} md={2}>
+                  <FolderIcon className={classes.icon} />
+                  <Typography>
+                    {folder}
+                  </Typography>
+                </Grid>
+              ))}
+              {mods.map(({ id, name, imgUrl }, index) => (
+                <Draggable key={id} draggableId={id} index={index}>
+                  {(provided) => (
+                    <Grid item className={classes.item} xs={6} sm={2} md={2} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                      <img src={imgUrl} alt={name} className={classes.icon} />
+                      <Typography>
+                        {name}
+                      </Typography>
+                    </Grid>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </Grid>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };

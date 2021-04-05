@@ -31,9 +31,7 @@ module.exports = {
     'linebreak-style': [0, 'error', 'windows'],
     'react/react-in-jsx-scope': 0,
     'prefer-const': 0,
+    'react/jsx-props-no-spreading': 0,
   },
-  globals: {
-    google: 'readonly',
-  },
-  parser: 'babel-eslint',
+  // parser: 'babel-eslint',
 };
