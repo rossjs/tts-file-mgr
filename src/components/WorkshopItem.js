@@ -30,11 +30,11 @@ const WorkshopItem = memo(({ data, isSelected, handleSelect }) => {
   const type = ITEM_TYPES.MOD;
   const [{ opacity }, drag] = useDrag(() => ({
     type,
-    item: { name },
+    item: { id },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,
     }),
-  }), [name, type]);
+  }), [id]);
 
   const classes = useStyles({ opacity });
   return (

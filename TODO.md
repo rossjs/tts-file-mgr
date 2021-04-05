@@ -1,6 +1,5 @@
 # TODO
 
-* implement backend route to move mod (2 files) into folder
 * folder navigation
   * be able to open folder (via double-click?)
   * be able to back out of folder

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
@@ -8,7 +9,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import Folder from './Folder';
 import WorkshopItem from './WorkshopItem';
 
-import getAllFiles from '../utils/files/getAllFiles';
+import { createDispatchBindings } from '../utils/redux';
+import { getTree, moveIntoFolder } from '../reducers/tree';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,43 +21,36 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'rgba(0,0,0,0.1)',
     padding: 10,
   },
-  gridList: {
-    width: '100vw',
-    height: '100vh',
-  },
-  item: {
-    border: '1px rgba(0,0,0,0.2) solid',
-    borderRadius: 5,
-    boxShadow: '1px 2px rgba(0,0,0,0.2)',
-    margin: 5,
-    textAlign: 'center',
-    background: '#fff',
-  },
-  icon: {
-    color: 'rgba(200, 100, 255, 0.54)',
-    width: '100%',
-    height: 80,
-  },
 }));
 
-const FileManager = () => {
+const FileManager = ({ folders, workshopItems, getTree, moveIntoFolder }) => {
+  console.log('folders', folders);
   const classes = useStyles();
-  const [folderItems, setFolderItems] = useState({ folders: [], mods: [] });
-  useEffect(() => {
-    getAllFiles().then(setFolderItems);
-  }, []);
+  // get tree on load
+  useEffect(() => { getTree(); }, []);
 
-  const { folders, mods } = folderItems;
+  const [selected, setSelected] = useState(new Set());
+
+  // reset selection if tree changes
+  useEffect(() => { setSelected(new Set()); }, [folders, workshopItems]);
+
+  const handleDrop = ({ id, folder }) => {
+    console.log('id, folder', id, folder);
+    if (selected.size && selected.has(id)) {
+      return moveIntoFolder({ ids: Array.from(selected), folder });
+    }
+    moveIntoFolder({ ids: [id], folder });
+  };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div className={classes.root}>
         <Grid container>
           {folders.map((folder) => (
-            <Folder folderName={folder} key={folder} />
+            <Folder folder={folder} key={folder} handleDrop={handleDrop} />
           ))}
-          {mods.map((data, index) => (
-            <WorkshopItem data={data} key={data.id} />
+          {workshopItems.map((data, index) => (
+            <WorkshopItem data={data} key={data.id} selected={selected.has(data.id)} />
           ))}
         </Grid>
       </div>
@@ -63,4 +58,7 @@ const FileManager = () => {
   );
 };
 
-export default FileManager;
+const mapStateToProps = ({ tree }) => ({ ...tree });
+const mapDispatchToProps = createDispatchBindings({ getTree, moveIntoFolder });
+
+export default connect(mapStateToProps, mapDispatchToProps)(FileManager);

@@ -53,5 +53,5 @@ async function getAllModDetails(modSet, basePath) {
 module.exports = async function parseDirFiles(dirPaths, basePath = '') {
   const parsed = parseNames(dirPaths);
   const mods = await getAllModDetails(parsed.mods, basePath);
-  return { ...parsed, mods };
+  return { ...parsed, workshopItems: mods };
 };
