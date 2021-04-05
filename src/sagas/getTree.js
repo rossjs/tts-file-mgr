@@ -3,15 +3,15 @@ import { GET_TREE, setTree } from '../reducers/tree';
 
 // import loading from '../utils/loading';
 
-export function* getSetTree() {
+export function* getSetTree({ basePath = '' }) {
   // const loadingMsg = 'Accepting Service Agreement';
   // loading.start(loadingMsg);
   try {
-    const resp = yield fetch('/api/files');
+    const resp = yield fetch(`/api/files/${basePath}`);
     const tree = yield resp.json();
     yield put(setTree(tree));
   } catch (e) {
-    console.log(e);
+    console.error(e);
   } finally {
     // loading.end(loadingMsg);
   }

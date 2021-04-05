@@ -1,4 +1,4 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest } from 'redux-saga/effects';
 import { MOVE_INTO_FOLDER } from '../reducers/tree';
 import { getSetTree } from './getTree';
 
@@ -19,7 +19,7 @@ function* moveIntoFolder({ ids, folder }) {
       yield getSetTree();
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
   } finally {
     // loading.end(loadingMsg);
   }

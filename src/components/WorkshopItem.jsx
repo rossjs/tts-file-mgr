@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     boxShadow: '1px 2px rgba(0,0,0,0.2)',
     margin: 5,
     textAlign: 'center',
-    background: '#fff',
+    background: ({ selected }) => (selected ? 'pink' : '#fff'),
     cursor: 'move',
     opacity: ({ opacity }) => opacity,
   },
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
   },
 });
 
-const WorkshopItem = memo(({ data, isSelected, handleSelect }) => {
+const WorkshopItem = memo(({ data, selected, handleSelect }) => {
   const { id, name, imgUrl } = data;
   const type = ITEM_TYPES.MOD;
   const [{ opacity }, drag] = useDrag(() => ({
@@ -36,9 +36,9 @@ const WorkshopItem = memo(({ data, isSelected, handleSelect }) => {
     }),
   }), [id]);
 
-  const classes = useStyles({ opacity });
+  const classes = useStyles({ opacity, selected });
   return (
-    <Grid item className={classes.item} xs={6} sm={2} md={2} ref={drag} className={classes.itemRoot}>
+    <Grid item xs={6} sm={2} md={2} ref={drag} className={classes.itemRoot} onClick={handleSelect(id)}>
       <img src={imgUrl} alt={name} className={classes.icon} />
       <Typography className={classes.text}>{name}</Typography>
     </Grid>

@@ -9,7 +9,6 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  console.log('req.body', req.body)
   const { ids, folder } = req.body;
   const data = await File.moveFiles({ ids, folder });
   res.sendStatus(200);

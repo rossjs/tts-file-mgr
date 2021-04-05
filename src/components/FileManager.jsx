@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FileManager = ({ folders, workshopItems, getTree, moveIntoFolder }) => {
-  console.log('folders', folders);
   const classes = useStyles();
   // get tree on load
   useEffect(() => { getTree(); }, []);
@@ -35,11 +34,28 @@ const FileManager = ({ folders, workshopItems, getTree, moveIntoFolder }) => {
   useEffect(() => { setSelected(new Set()); }, [folders, workshopItems]);
 
   const handleDrop = ({ id, folder }) => {
-    console.log('id, folder', id, folder);
     if (selected.size && selected.has(id)) {
       return moveIntoFolder({ ids: Array.from(selected), folder });
     }
     moveIntoFolder({ ids: [id], folder });
+  };
+
+  const handleSelect = (id) => (event) => {
+    // event.stopPropagation();
+    const { metaKey, ctrlKey } = event;
+    // if mutli-selecting via cmd/ctrl
+    if (metaKey || ctrlKey) {
+      if (selected.has(id)) {
+        selected.delete(id);
+        return setSelected(new Set(selected));
+      }
+      selected.add(id);
+      return setSelected(new Set(selected));
+    }
+
+    if (selected.has(id)) return setSelected(new Set());
+
+    setSelected(new Set([id]));
   };
 
   return (
@@ -50,7 +66,7 @@ const FileManager = ({ folders, workshopItems, getTree, moveIntoFolder }) => {
             <Folder folder={folder} key={folder} handleDrop={handleDrop} />
           ))}
           {workshopItems.map((data, index) => (
-            <WorkshopItem data={data} key={data.id} selected={selected.has(data.id)} />
+            <WorkshopItem data={data} key={data.id} selected={selected.has(data.id)} handleSelect={handleSelect} />
           ))}
         </Grid>
       </div>
