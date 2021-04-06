@@ -1,7 +1,5 @@
 # TODO
 
-* disregard mods that use .cjs files
-
 * folder navigation
   * be able to back out of folder
 
@@ -10,6 +8,8 @@
   * delete folder? (not sure of repurcusions of this)
 
 * be able to move mod back out of folder
+
+* disregard mods that use .cjs files
 
 * implement full tree-view
 
